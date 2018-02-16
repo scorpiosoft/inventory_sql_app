@@ -1,0 +1,25 @@
+{
+  "name": "inventory_sql_app",
+  "version": "1.0.0",
+  "description": "Present a storefront to a SQL inventory DB",
+  "main": "customer.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/scorpiosoft/inventory_sql_app.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/scorpiosoft/inventory_sql_app/issues"
+  },
+  "homepage": "https://github.com/scorpiosoft/inventory_sql_app#readme",
+  "dependencies": {
+    "inquirer": "^5.1.0",
+    "mysql": "^2.15.0",
+    "sprintf-js": "^1.1.1"
+  }
+}
