@@ -1,6 +1,5 @@
 // Customer View
 
-// Then create a Node application called bamazonCustomer.js. Running this application will first display all of the items available for sale. Include the ids, names, and prices of products for sale.
 // The app should then prompt users with two messages.
 
 // The first should ask them the ID of the product they would like to buy.
@@ -38,13 +37,20 @@ var connection = mysql.createConnection({
 
 function display_products()
 {
-  // var query = "SELECT item_id, product_name, price, department_name FROM products GROUP BY department_name";
-  var query = "SELECT item_id, product_name, price FROM products";
+  var query = "SELECT item_id, product_name, price, department_name FROM products ORDER BY department_name";
+  // var query = "SELECT item_id, product_name, price FROM products";
   connection.query(query, function(err, res)
   {
+    var dept, sav_dept = '';
     for (var i = 0; i < res.length; i++)
     {
-      var out = sprintf("ID:  %3d\tName:  %22s\tPrice:  %10.2f"
+      dept = res[i].department_name;
+      if (dept !== sav_dept)
+      {
+        console.log('Department:', dept);
+        sav_dept = dept;
+      }
+      var out = sprintf("\tID: %3d   Name: %22s   Price: %10.2f"
                   , res[i].item_id
                   , res[i].product_name
                   , res[i].price
