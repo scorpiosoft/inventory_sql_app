@@ -1,19 +1,3 @@
-// Customer View
-
-// The app should then prompt users with two messages.
-
-// The first should ask them the ID of the product they would like to buy.
-// The second message should ask how many units of the product they would like to buy.
-
-// Once the customer has placed the order, your application should check if your store has enough of the product to meet the customer's request.
-
-// If not, the app should log a phrase like Insufficient quantity!, and then prevent the order from going through.
-
-// However, if your store does have enough of the product, you should fulfill the customer's order.
-
-// This means updating the SQL database to reflect the remaining quantity.
-// Once the update goes through, show the customer the total cost of their purchase.
-
 var mysql = require("mysql");
 var inquirer = require("inquirer");
 var sprintf = require("sprintf-js").sprintf;
@@ -30,10 +14,10 @@ var connection = mysql.createConnection({
   database: "bamazon"
 });
 
-// connection.connect(function(err) {
-//   if (err) throw err;
-//   runSearch();
-// });
+connection.connect(function(err) {
+  if (err) throw err;
+  display_products();
+});
 
 var product_list = [];
 
@@ -41,13 +25,14 @@ function display_products()
 {
   var do_add_list = false;
   var query = "SELECT item_id, product_name, price, department_name FROM products ORDER BY department_name";
-  // var query = "SELECT item_id, product_name, price FROM products";
 
   if (product_list.length === 0)
     do_add_list = true;
 
   connection.query(query, function(err, res)
   {
+    if (err) console.log(err);
+
     var dept, sav_dept = '';
     for (var i = 0; i < res.length; i++)
     {
@@ -71,28 +56,6 @@ function display_products()
   });
 }
 
-function check_inventory()
-{
-
-}
-
-function complete_purchase()
-{
-
-}
-
-    // name: "product",
-    // type: "input",
-    // message: "What would you like to buy?",
-    // validate: function(value)
-    // {
-    //   for (var i = 0; i < product_list.length; ++i)
-    //   {
-    //     if (value === product_list[i]) return true;
-    //   }
-    //   return false;
-    // }
-
 function make_purchase()
 {
   inquirer.prompt([
@@ -114,15 +77,40 @@ function make_purchase()
   }
   ]).then(function(answers)
   {
-    console.log(answers);
-    if (check_inventory(answers))
+    // console.log(answers);
+    check_inventory(answers);
+  });
+}
+
+function check_inventory(answers)
+{
+  var query = "SELECT product_name, price, stock_quantity FROM products WHERE product_name=?";
+
+  connection.query(query, [answers.product], function(err, res)
+  {
+    if (err) console.log(err);
+
+    // console.log(res);
+    if (res[0].stock_quantity >= answers.quantity)
     {
-      complete_purchase(answers);
+      complete_purchase(answers, res[0].stock_quantity, res[0].price);
+    } else {
+      console.log('\nInsufficient quantity in stock [', res[0].stock_quantity, ']');
+      connection.end();
     }
   });
 }
 
-display_products();
-// make_purchase();
+function complete_purchase(answers, qty, price)
+{
+  var query = "UPDATE products SET ? WHERE ?";
+    
+  connection.query(query, [{ stock_quantity: qty - answers.quantity },
+                           { product_name: answers.product }], function(err, res)
+  {
+    if (err) console.log(err);
 
-connection.end();
+    console.log('Your purchase comes to $' + (answers.quantity * price).toFixed(2));
+    connection.end();
+  });
+}
