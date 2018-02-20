@@ -100,9 +100,30 @@ function display_products(get_inventory)
       product_list.push({ name: res[i].product_name, qty: res[i].stock_quantity });
     }
     console.log('');
-    if (get_inventory !== get_inventory)
+    if (get_inventory !== true)
       do_prompt();
     else
       add_quantity();
+  });
+}
+
+// display low inventory products
+function display_low_inventory(get_inventory)
+{
+  var query = "SELECT product_name, stock_quantity FROM products WHERE stock_quantity < 5";
+
+  connection.query(query, function(err, res)
+  {
+    if (err) console.log(err);
+
+    for (var i = 0; i < res.length; i++)
+    {
+      var out = sprintf("\tQuantity: %10d   Name: %22s"
+                  , res[i].stock_quantity
+                  , res[i].product_name
+                );
+      console.log(out);
+    }
+    do_prompt();
   });
 }
