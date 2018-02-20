@@ -26,7 +26,7 @@ Node APIs:
 2. `node manager`
 
 ### Demonstration
-<embed src="./bamazon.mov" width="480"></embed>
+![](bamazon.mov)
 
 ## Author
 
