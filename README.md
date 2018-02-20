@@ -26,7 +26,7 @@ Node APIs:
 2. `node manager`
 
 ### Demonstration
-![](bamazon.mov)
+For a demonstration, watch the bamazon.mov video.
 
 ## Author
 
