@@ -81,14 +81,14 @@ function display_products(get_inventory)
     var dept, sav_dept = '';
     for (var i = 0; i < res.length; i++)
     {
-      dept = res[i].department_name;
-      if (dept !== sav_dept)
-      {
-        console.log('Department:', dept);
-        sav_dept = dept;
-      }
       if (get_inventory !== true)
       {
+        dept = res[i].department_name;
+        if (dept !== sav_dept)
+        {
+          console.log('Department:', dept);
+          sav_dept = dept;
+        }
         var out = sprintf("\tID: %3d   Quantity: %10d   Name: %22s   Price: %10.2f"
                     , res[i].item_id
                     , res[i].stock_quantity
@@ -127,3 +127,52 @@ function display_low_inventory(get_inventory)
     do_prompt();
   });
 }
+
+// add quantity to a product
+function add_quantity()
+{
+  inquirer.prompt([
+  {
+    name: "product",
+    type: "list",
+    message: "Which product to add to?",
+    choices: product_list
+  },
+  {
+    name: "quantity",
+    type: "input",
+    message: "Quantity?",
+    validate: function(value)
+    {
+      if (isNaN(value)) return false;
+      return true;
+    }
+  }
+  ]).then(function(answers)
+  {
+    var query = "UPDATE products SET ? WHERE ?";
+    var p = product_list.find(p => p.name === answers.product);
+    var qty = parseInt(p.qty) + parseInt(answers.quantity);
+
+    var sql = connection.query(query,
+      [
+        {
+          stock_quantity: qty
+        },
+        {
+          product_name: answers.product
+        }
+      ],
+      function(err, res)
+      {
+        if (err) console.log(err);
+
+        // console.log(res);
+        console.log("quantity updated,", res.changedRows == 1 ? 'true' : 'false', '\n');
+        do_prompt();
+      }
+    );
+    // console.log(sql.sql);
+  });
+}
+
