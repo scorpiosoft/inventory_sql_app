@@ -2,7 +2,8 @@ var mysql = require("mysql");
 var inquirer = require("inquirer");
 var sprintf = require("sprintf-js").sprintf;
 
-var connection = mysql.createConnection({
+var connection = mysql.createConnection(
+{
   host: "localhost",
   port: 3306,
 
@@ -14,7 +15,8 @@ var connection = mysql.createConnection({
   database: "bamazon"
 });
 
-connection.connect(function(err) {
+connection.connect(function(err)
+{
   if (err) throw err;
   display_products();
 });
