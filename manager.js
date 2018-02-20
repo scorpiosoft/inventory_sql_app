@@ -176,3 +176,57 @@ function add_quantity()
   });
 }
 
+function add_product()
+{
+  inquirer.prompt([
+  {
+    name: "product",
+    type: "input",
+    message: "What is the name of the new product?"
+  },
+  {
+    name: "department",
+    type: "input",
+    message: "What department does the product belong to?"
+  },
+  {
+    name: "price",
+    type: "input",
+    message: "Price?",
+    validate: function(value)
+    {
+      if (isNaN(value)) return false;
+      return true;
+    }
+  },
+  {
+    name: "quantity",
+    type: "input",
+    message: "Initial quantity?",
+    validate: function(value)
+    {
+      if (isNaN(value)) return false;
+      return true;
+    }
+  }
+  ]).then(function(answers)
+  {
+    var query = "INSERT INTO products SET ?";
+
+    connection.query(query,
+      {
+        product_name:    answers.product,
+        department_name: answers.department,
+        price:           answers.price,
+        stock_quantity:  answers.quantity
+      },
+      function(err, res)
+      {
+        if (err) console.log(err);
+
+        console.log("product added,", res.affectedRows == 1 ? 'true' : 'false', '\n');
+        do_prompt();
+      }
+    );
+  });
+}
