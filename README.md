@@ -14,11 +14,13 @@ Node APIs:
 
 - [Node.js](https://nodejs.org/en/)
 - [npm](https://www.npmjs.com)
+- [mysql](https://www.mysql.com)
 
 ### Installing
 
 1. Clone this repo down to your local machine
 2. `npm install`
+3. load the schema.sql into your mysql database, then seed.sql
 
 ### Running
 
